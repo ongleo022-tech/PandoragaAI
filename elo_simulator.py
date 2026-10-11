@@ -1,12 +1,14 @@
-"""Pandoraga Elo Simulator - Monte Carlo Simulations.
+"""Pandoraga Elo Simulator - Monte Carlo Simulations (MAX MODE).
 
 This module estimates the Elo rating of Pandoraga Omega through multiple Monte Carlo
-simulations. It tests the engine against theoretical opponents at different skill levels
-and calculates the most probable Elo rating based on win/loss/draw statistics.
+simulations at MAXIMUM performance settings. It tests the engine against theoretical
+opponents all running at optimal depth and calculates the Elo rating based on
+win/loss/draw statistics.
 """
 
 from __future__ import annotations
 
+import math
 import random
 import statistics
 from dataclasses import dataclass
@@ -39,26 +41,30 @@ class EloReport:
 
 
 class PandoragaEloSimulator:
-    """Monte Carlo Elo simulator for Pandoraga Omega.
+    """Monte Carlo Elo simulator for Pandoraga Omega - MAXIMUM MODE.
 
     This simulator runs matches between Pandoraga and theoretical opponents,
-    tracking win/loss/draw rates to estimate the engine's Elo rating.
+    ALL at maximum depth (18), to estimate the engine's true Elo rating.
     """
 
-    def __init__(self, pandoraga_depth: int = 18):
-        self.pandoraga_depth = pandoraga_depth
-        self.baseline_elo = 1600
+    # MAXIMUM CONFIGURATION
+    ENGINE_DEPTH = 18
+    OPPONENT_DEPTHS = [18, 18, 18, 18, 18]  # All at max
+    BASELINE_ELO = 1600
+
+    def __init__(self, pandoraga_depth: int = ENGINE_DEPTH):
+        self.pandoraga_depth = max(pandoraga_depth, 18)  # Force minimum 18
+        self.baseline_elo = self.BASELINE_ELO
 
     def _win_probability(
         self, pandoraga_depth: int, opponent_depth: int, opponent_elo: int
     ) -> float:
         """Calculate win probability based on depth and Elo difference.
 
-        A deeper search generally improves win probability, but the relationship
-        is non-linear. This uses a sigmoid function scaled by depth ratio.
+        At maximum depth, the advantage is primarily determined by Elo rating.
         """
         depth_ratio = pandoraga_depth / max(1, opponent_depth)
-        depth_factor = 0.3 + 0.5 * min(1.0, (depth_ratio - 1.0) / 2.0)
+        depth_factor = 0.2 + 0.3 * min(1.0, (depth_ratio - 1.0) / 2.0)
 
         elo_diff = self.baseline_elo - opponent_elo
         expected_score = 1.0 / (1.0 + 10.0 ** (-elo_diff / 400.0))
@@ -81,7 +87,7 @@ class PandoragaEloSimulator:
         draws = 0
 
         win_prob = self._win_probability(pandoraga_depth, opponent_depth, opponent_elo)
-        draw_prob = 0.15 + (0.1 if opponent_depth >= pandoraga_depth else 0.0)
+        draw_prob = 0.20
         loss_prob = 1.0 - win_prob - draw_prob
 
         for _ in range(num_games):
@@ -112,20 +118,20 @@ class PandoragaEloSimulator:
 
     def run_tournament(
         self,
-        num_simulations: int = 100,
-        games_per_simulation: int = 50,
+        num_simulations: int = 500,
+        games_per_simulation: int = 100,
     ) -> EloReport:
         """Run multiple Monte Carlo simulations to estimate Elo rating.
 
-        Tests Pandoraga against opponents at various skill levels and calculates
-        the most probable Elo rating.
+        MAXIMUM MODE: 500 simulations, 100 games each = 50,000 total games
+        Tests Pandoraga against opponents at various Elo levels, ALL at depth 18.
         """
         opponents = [
-            ("Beginner (800 Elo)", 8, 800),
-            ("Intermediate (1200 Elo)", 10, 1200),
-            ("Advanced (1600 Elo)", 14, 1600),
-            ("Strong (2000 Elo)", 18, 2000),
-            ("Master (2400 Elo)", 22, 2400),
+            ("Intermediate (1200 Elo) - Depth 18", 18, 1200),
+            ("Advanced (1600 Elo) - Depth 18", 18, 1600),
+            ("Strong (2000 Elo) - Depth 18", 18, 2000),
+            ("Master (2400 Elo) - Depth 18", 18, 2400),
+            ("Grandmaster (2800 Elo) - Depth 18", 18, 2800),
         ]
 
         all_elo_estimates = []
@@ -170,53 +176,56 @@ class PandoragaEloSimulator:
 
     def print_report(self, report: EloReport) -> None:
         """Print a formatted Elo estimation report."""
-        print("\n" + "=" * 70)
-        print("PANDORAGA OMEGA - ELO RATING ESTIMATION REPORT")
-        print("=" * 70)
-        print(f"\nSimulation Parameters:")
+        print("\n" + "=" * 80)
+        print("🐼 PANDORAGA OMEGA - ELO RATING ESTIMATION REPORT (MAXIMUM MODE)")
+        print("=" * 80)
+        print(f"\n⚙️  MAXIMUM CONFIGURATION:")
         print(f"  - Engine depth: {self.pandoraga_depth}")
+        print(f"  - All opponents depth: 18 (MAXIMUM)")
         print(f"  - Number of simulations: {report.simulations}")
         print(f"  - Games per simulation: {report.matches_per_simulation}")
-        print(f"  - Total games simulated: {report.simulations * report.matches_per_simulation}")
+        print(f"  - Total games simulated: {report.simulations * report.matches_per_simulation:,}")
 
-        print(f"\nEstimated Elo Rating:")
-        print(f"  - Average: {report.average_elo:.1f}")
-        print(f"  - Minimum: {report.min_elo:.1f}")
-        print(f"  - Maximum: {report.max_elo:.1f}")
-        print(f"  - Std Dev: {report.std_dev:.1f}")
+        print(f"\n📊 ESTIMATED ELO RATING:")
+        print(f"  - Average Elo: {report.average_elo:.1f}")
+        print(f"  - Minimum Elo: {report.min_elo:.1f}")
+        print(f"  - Maximum Elo: {report.max_elo:.1f}")
+        print(f"  - Standard Deviation: {report.std_dev:.1f}")
         print(f"  - 95% Confidence Interval: ({report.confidence_interval_95[0]:.1f}, {report.confidence_interval_95[1]:.1f})")
 
-        print(f"\nPerformance vs. Opponent Levels:")
+        print(f"\n🎯 PERFORMANCE vs. OPPONENT LEVELS (All at Depth 18):")
         for opponent_name, elo_list in report.results_by_opponent.items():
             avg_elo_vs = statistics.mean(elo_list)
             print(f"  - {opponent_name}: {avg_elo_vs:.1f}")
 
-        print("\n" + "=" * 70)
-        print("⚠️  DISCLAIMER:")
-        print("This is a theoretical estimation based on Monte Carlo simulations.")
+        print("\n" + "=" * 80)
+        print("⚠️  IMPORTANT DISCLAIMER:")
+        print("This is a THEORETICAL estimation based on Monte Carlo simulations.")
         print("Real-world Elo depends on actual tournament results against known opponents.")
-        print("=" * 70 + "\n")
-
-
-import math
+        print("Depth 18 provides deep analysis but does not guarantee these results.")
+        print("=" * 80 + "\n")
 
 
 def main() -> None:
-    """Run Elo estimation simulations."""
-    print("\n🐼 PANDORAGA OMEGA - MONTE CARLO ELO SIMULATOR\n")
+    """Run Elo estimation simulations in MAXIMUM MODE."""
+    print("\n" + "=" * 80)
+    print("🐼 PANDORAGA OMEGA - MONTE CARLO ELO SIMULATOR (MAXIMUM MODE)")
+    print("=" * 80)
+    print("\n⚙️  Configuration: Depth 18 • 500 Simulations • 100 Games Each = 50,000 Total Games")
+    print("\n⏳ Running simulations... (this may take 30-60 seconds)\n")
 
     simulator = PandoragaEloSimulator(pandoraga_depth=18)
 
-    print("Running simulations... (this may take a moment)")
     report = simulator.run_tournament(
-        num_simulations=100,
-        games_per_simulation=50,
+        num_simulations=500,
+        games_per_simulation=100,
     )
 
     simulator.print_report(report)
 
-    print("\n📊 Simulation completed!")
-    print(f"Estimated Elo: {report.average_elo:.0f} ± {report.std_dev:.0f}\n")
+    print("\n✅ SIMULATION COMPLETED!")
+    print(f"📈 Estimated Elo: {report.average_elo:.0f} ± {report.std_dev:.0f}")
+    print(f"🎯 Confidence (95%): {report.confidence_interval_95[0]:.0f} - {report.confidence_interval_95[1]:.0f}\n")
 
 
 if __name__ == "__main__":
