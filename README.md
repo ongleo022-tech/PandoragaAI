@@ -1,73 +1,71 @@
-# 🐼 Pandoraga Full Adaptation Ω
+# 🐼 Pandoraga Ω — Full Adaptation Chess Engine
 
-Moteur d'échecs Python orienté recherche, adaptation statistique locale et interface graphique Tkinter.
+**An experimental Python chess engine exploring search algorithms, position evaluation and adaptive playing strategies.**
 
-> **État du dépôt :** paquet de publication préparé à partir du fichier Pandoraga Ω fourni dans les fichiers du projet. La compilation syntaxique Python a été vérifiée. Le fonctionnement complet de l'interface, toutes les règles d'échecs et la force Elo n'ont pas été validés indépendamment : faites les tests décrits ci-dessous avant de présenter une version comme stable.
+[![Python](https://img.shields.io/badge/Python-3.x-blue.svg)](https://www.python.org/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Status](https://img.shields.io/badge/Status-Experimental-orange.svg)]()
 
-## Fonctionnalités annoncées par le projet
+Pandoraga Ω is an open-source chess-engine project built around Python. Its goal is to combine chess search, position evaluation, time management and persistent data to experiment with different playing strategies.
 
-- Recherche d'échecs avec Negamax / Alpha-Beta et améliorations de recherche présentes dans le code.
-- Profondeur et temps de réflexion adaptatifs, dans les limites définies par le moteur.
-- Mémoire locale JSON pour les données d'adaptation.
-- Interface graphique Tkinter.
-- Mode Stockfish optionnel, si la version du programme et le système utilisé le prennent en charge et si Stockfish est installé séparément.
-- Fonctionnement local ; aucune connexion réseau n'est nécessaire au moteur de base.
+> ♟️ **Project goal:** build, test and improve a chess engine with an accessible Python codebase.
 
-Les éléments ci-dessus décrivent les objectifs et éléments présents dans le code, pas une certification indépendante de leur exactitude ni une garantie de niveau Elo.
+## ✨ Features
 
-## Prérequis
+- **Chess search:** Negamax and alpha-beta pruning, where implemented.
+- **Search improvements:** iterative deepening and additional search optimizations, where implemented.
+- **Position evaluation:** evaluate chess positions using the engine's evaluation logic.
+- **Adaptive experiments:** explore changes in playing strategies and opponent-related data.
+- **Persistent memory:** JSON-based storage for supported saved data.
+- **Time management:** configurable or automatic search time, depending on the implementation.
+- **Graphical interface:** Tkinter interface, if supported by the current version.
+- **Python-first design:** intended to be approachable for developers learning about chess engines.
 
-- Python 3.10 ou plus récent recommandé.
-- Tkinter disponible dans l'installation Python pour utiliser la fenêtre graphique.
-- Aucun paquet `pip` n'est requis par le fichier principal.
-- Stockfish est facultatif et n'est pas distribué dans ce dépôt.
+Feature availability depends on the exact version of the source code. See the implementation and release notes for details.
 
-## Démarrage
+## 🚀 Getting started
 
-### Windows
+### Requirements
 
-1. Installez Python depuis le site officiel et activez l'option d'ajout au `PATH`.
-2. Ouvrez un terminal dans le dossier du projet.
-3. Lancez :
+- Python 3.10+
+- Tkinter, if using the graphical interface
+- No external packages are required if the current version uses Python's standard library exclusively.
 
-```powershell
+### Run on Windows
+
+1. Download or clone this repository.
+2. Open a terminal in the project directory.
+3. Run:
+
+```bash
+python Pandoraga.py
+```
+
+If your installation uses the Python launcher, try:
+
+```bash
 py Pandoraga.py
 ```
 
-Vous pouvez aussi lancer `run_windows.bat`.
-
-### Linux
-
-Vérifiez que Python et Tkinter sont installés, puis exécutez :
+### Run on Linux
 
 ```bash
 python3 Pandoraga.py
 ```
 
-### Android
+**Note:** Tkinter availability depends on your Python installation and operating system.
 
-Le code utilise Tkinter : beaucoup d'environnements Python Android ne le prennent pas en charge. Le fichier n'est donc **pas garanti compatible Android** sans environnement graphique compatible.
+## 🧠 How it works
 
-## Mémoire et confidentialité
+Chess engines generally combine three major components:
 
-Le moteur utilise un fichier de mémoire JSON local nommé `pandoraga_memoire.json` (ou le nom défini dans le code). Ce fichier peut contenir des données de parties ou d'adaptation. Ne publiez pas votre mémoire personnelle dans GitHub ; elle est exclue par `.gitignore`.
+1. **Move search** — explore possible continuations of a position.
+2. **Position evaluation** — estimate which side has the advantage.
+3. **Search control** — manage depth, time and computational resources.
 
-## Vérification rapide
+Pandoraga Ω is a project for experimenting with these components. Its actual playing strength depends on the implemented algorithms, testing and hardware.
 
-```bash
-python -m py_compile Pandoraga.py
-```
-
-Cette commande vérifie la syntaxe, pas la qualité des coups ni le fonctionnement de la GUI. Avant une publication stable, vérifiez notamment : coups légaux, roque, en passant, promotions, échec et mat, pat, répétition, arrêt de recherche, sauvegarde/chargement JSON et fermeture propre de l'application.
-
-## Limites importantes
-
-- La profondeur maximale configurée n'est pas une promesse que chaque coup atteindra cette profondeur : le temps, le matériel et la complexité de la position comptent.
-- Le score d'évaluation n'est pas un classement Elo officiel.
-- L'adaptation JSON/statistique ne doit pas être décrite comme un réseau neuronal entraîné si aucun tel modèle n'est présent.
-- Ne présentez pas « 2000 Elo » ou un autre niveau comme acquis sans un protocole de parties mesuré et reproductible.
-
-## Structure
+## 📁 Project structure
 
 ```text
 Pandoraga-Full-Adaptation-Omega/
@@ -77,17 +75,68 @@ Pandoraga-Full-Adaptation-Omega/
 ├── CHANGELOG.md
 ├── CONTRIBUTING.md
 ├── SECURITY.md
-├── .gitignore
-├── run_windows.bat
 ├── docs/
-│   ├── ARCHITECTURE.md
-│   └── TESTS.md
-├── tests/
-│   └── test_syntax.py
-└── .github/workflows/
-    └── python-check.yml
+└── .github/
+    └── workflows/
 ```
 
-## Licence
+The exact structure may change between releases.
 
-Voir `LICENSE`. Remplacez le détenteur du copyright par le nom ou l'organisation appropriée avant publication si nécessaire.
+## 🧪 Testing and limitations
+
+Pandoraga Ω is an experimental project. Before relying on a release, verify:
+
+- Legal move handling and special chess rules.
+- Checkmate, stalemate and draw detection.
+- Search stability and time limits.
+- Memory usage and performance on different devices.
+- Correct saving and loading of persistent data.
+
+No official Elo rating, tournament result or guaranteed playing strength is claimed without reproducible benchmarks.
+
+## 🗺️ Roadmap
+
+- [ ] Expand automated chess-rule tests.
+- [ ] Benchmark playing strength against reference engines.
+- [ ] Improve search efficiency and time management.
+- [ ] Document the evaluation function and adaptive mechanisms.
+- [ ] Improve compatibility and usability on more devices.
+
+## 🤝 Contributing
+
+Contributions are welcome!
+
+You can help by:
+
+- Reporting reproducible bugs.
+- Improving documentation.
+- Adding tests for chess rules.
+- Optimizing search performance.
+- Sharing benchmark results and improvement ideas.
+
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) before submitting a pull request.
+
+## 🔐 Security
+
+Please see [SECURITY.md](SECURITY.md) for guidance on reporting security-related issues.
+
+## 📄 License
+
+This project is distributed under the license specified in the [`LICENSE`](LICENSE) file.
+
+## ⭐ Support the project
+
+If you find Pandoraga Ω interesting:
+
+- ⭐ Star the repository.
+- 🐛 Report bugs with reproducible examples.
+- 💡 Suggest improvements.
+- 🔧 Contribute code or documentation.
+
+## 📞 Discussions & Questions
+
+Have questions or want to discuss features? Check out the [Discussions](https://github.com/ongleo022-tech/PandoragaAI/discussions) tab!
+
+---
+
+**Built with Python and a passion for chess. 🐼♟️**
