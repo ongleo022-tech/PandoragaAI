@@ -4,7 +4,7 @@ import py_compile
 import unittest
 
 
-ROOT = pathlib.Path(__file__).resolve().parents[1]
+ROOT = pathlib.Path(__file__).resolve().parent
 SOURCE = ROOT / "Pandoraga.py"
 
 
