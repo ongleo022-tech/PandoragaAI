@@ -1,6 +1,4 @@
-# Pandoraga Ω — profil RAM 4GB
-# Profil dérivé du moteur complet fourni par l’utilisateur.
-# Réglages de ressources indicatifs : ils ne garantissent pas une consommation RAM exacte ni un Elo donné.
+# Profil statique RAM 4GB — généré à partir du moteur complet Pandoraga.py.
 # ============================================================
 # 🐼 PANDORAGA FULL ADAPTATION Ω
 # BLOC 1/25 — CONFIGURATION GÉNÉRALE
@@ -18,7 +16,7 @@ import random
 # ------------------------------------------------------------
 
 PANDORAGA_NOM = "Pandoraga Full Adaptation Ω"
-PANDORAGA_VERSION = "Ω Adaptation MAX 2.0"
+PANDORAGA_VERSION = "Ω Adaptation 4GB Profile 1.0"
 
 AUTEUR = "Pandoraga Project"
 
@@ -37,12 +35,9 @@ MEMOIRE_FICHIER = "pandoraga_memoire.json"
 MAX_DEPTH = 12
 # Mode MAX : budget maximal de recherche configuré.
 # La limite de temps reste une limite de sécurité.
-TIME_LIMIT = 30.0
-
+TIME_LIMIT = 8.0
 # Capacité maximale configurée de la table de transposition.
-HASH_MAX_ENTRIES = 300_000
-
-
+HASH_MAX_ENTRIES = 100_000
 # ------------------------------------------------------------
 # PARAMÈTRES D'ADAPTATION Ω
 # ------------------------------------------------------------
@@ -90,10 +85,8 @@ USE_MOVE_ORDERING = True
 
 MEMORY_MAX_GAMES = 500
 MEMORY_MAX_ERRORS = 500
-MEMORY_MAX_MOVES = 5000
-MEMORY_MAX_OPPONENTS = 1000
-
-
+MEMORY_MAX_MOVES = 5_000
+MEMORY_MAX_OPPONENTS = 1_000
 # ------------------------------------------------------------
 # PARAMÈTRES D'ÉVALUATION
 # ------------------------------------------------------------
@@ -7606,9 +7599,7 @@ TT_EXACT = 0
 TT_ALPHA = 1
 TT_BETA = 2
 
-TT_MAX_ENTRIES = 300000
-
-
+TT_MAX_ENTRIES = 100_000
 # ------------------------------------------------------------
 # TABLE PRINCIPALE
 # ------------------------------------------------------------
@@ -17298,8 +17289,8 @@ import time
 # PARAMÈTRES
 # ------------------------------------------------------------
 
-MOTEUR_MAX_DEPTH = 15
-MOTEUR_TIME_LIMIT = 30.0
+MOTEUR_MAX_DEPTH = 12
+MOTEUR_TIME_LIMIT = 8.0
 MOTEUR_MAX_CANDIDATS = 15
 
 MOTEUR_INF = 1000000000
@@ -18732,7 +18723,7 @@ import subprocess
 # CONFIGURATION
 # ================================================================
 
-TITLE = "🐼 PANDORAGA Ω — AUTO FULL ADAPTATION"
+TITLE = "🐼 PANDORAGA Ω — PROFIL 4GB"
 
 MEMORY_FILE = "pandoraga_memoire.json"
 JPADON_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "jpadon_memoire.json")
@@ -21113,7 +21104,8 @@ class PandoragaEngine:
         # --------------------------------------------------------
         # 2-3. BUDGET DU MOTEUR
         # --------------------------------------------------------
-        # En mode MAX, le moteur utilise les limites configurées pour ce profil RAM.
+        # En mode MAX, on donne au moteur tout le budget autorisé :
+        # 8.0 secondes maximum et recherche itérative jusqu'à profondeur 12.
         # Les calculs AUTO restent disponibles en désactivant MAX_ENGINE_MODE.
         if MAX_ENGINE_MODE:
             self.time_limit = AUTO_MAX_TIME
